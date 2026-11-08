@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dayflow</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <!-- Íconos: se definen una vez y se reutilizan con <use> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
+      <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+      <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 3h5"/></symbol>
+      <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <!-- Barra superior: solo visible en pantallas pequeñas -->
+    <header class="topbar">
+      <button id="menu-toggle" class="icon-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar">
+        <svg class="icon"><use href="#i-menu"/></svg>
+      </button>
+      <span class="topbar-name">Dayflow</span>
+    </header>
+
+    <div id="scrim" class="scrim" hidden></div>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <strong class="brand-name">Dayflow</strong>
+          <small class="brand-tagline">Make room for what matters.</small>
+        </div>
+      </div>
+      <nav aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><button class="nav-link is-active" data-section="overview"><svg class="icon"><use href="#i-home"/></svg>Overview</button></li>
+          <li><button class="nav-link" data-section="tasks"><svg class="icon"><use href="#i-check"/></svg>My Tasks</button></li>
+          <li><button class="nav-link" data-section="calendar"><svg class="icon"><use href="#i-cal"/></svg>Calendar</button></li>
+          <li><button class="nav-link" data-section="focus"><svg class="icon"><use href="#i-timer"/></svg>Focus Room</button></li>
+          <li><button class="nav-link" data-section="music"><svg class="icon"><use href="#i-music"/></svg>Music</button></li>
+          <li><button class="nav-link" data-section="settings"><svg class="icon"><use href="#i-gear"/></svg>Settings</button></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main" id="main">
+      <!-- OVERVIEW -->
+      <section id="overview" class="view">
+        <header class="hero">
+          <div>
+            <p id="today-date" class="hero-date"></p>
+            <h1 id="greeting">Hola</h1>
+            <p id="daily-quote" class="hero-quote"></p>
+          </div>
+          <div class="hero-actions">
+            <!-- Abre el formulario de tareas -->
+            <button class="btn btn-primary" id="quick-add" data-open-task>
+              <svg class="icon"><use href="#i-plus"/></svg>Nueva tarea
+            </button>
+            <button class="icon-btn" data-section="settings" aria-label="Ir a configuración">
+              <svg class="icon"><use href="#i-gear"/></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="stats" aria-label="Resumen de tareas">
+          <article class="stat"><span class="stat-value" id="stat-pending">0</span><span class="stat-label">Pendientes</span></article>
+          <article class="stat"><span class="stat-value" id="stat-completed">0</span><span class="stat-label">Completadas</span></article>
+          <article class="stat"><span class="stat-value" id="stat-soon">0</span><span class="stat-label">Próximas a vencer</span></article>
+          <article class="stat stat-alert"><span class="stat-value" id="stat-overdue">0</span><span class="stat-label">Vencidas</span></article>
+        </div>
+
+        <div class="columns">
+          <section class="card" aria-labelledby="today-title">
+            <h2 id="today-title">Today’s Tasks</h2>
+            <div class="empty" id="today-list">
+              <p>Tu día está despejado.</p>
+              <small>Las tareas con entrega hoy aparecerán aquí.</small>
+            </div>
+          </section>
+          <section class="card" aria-labelledby="upcoming-title">
+            <h2 id="upcoming-title">Upcoming Deadlines</h2>
+            <div class="empty" id="upcoming-list">
+              <p>Sin entregas próximas.</p>
+              <small>Las fechas más cercanas se ordenarán aquí.</small>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Secciones futuras: marcadores reales, sin funciones falsas -->
+      <section id="tasks" class="view" hidden>
+        <header class="page-head page-head-row">
+          <h1>My Tasks</h1>
+          <button class="btn btn-primary" data-open-task><svg class="icon"><use href="#i-plus"/></svg>Nueva tarea</button>
+        </header>
+        <div class="toolbar">
+          <input type="search" id="task-search" placeholder="Buscar por nombre" aria-label="Buscar tareas">
+          <select id="task-filter" aria-label="Filtrar por estado">
+            <option value="all">Todas</option><option value="pending">Pendientes</option>
+            <option value="progress">En progreso</option><option value="completed">Completadas</option>
+            <option value="overdue">Vencidas</option>
+          </select>
+          <select id="task-priority" aria-label="Filtrar por prioridad">
+            <option value="all">Toda prioridad</option><option value="high">Alta</option>
+            <option value="medium">Media</option><option value="low">Baja</option>
+          </select>
+          <select id="task-category" aria-label="Filtrar por categoría"><option value="all">Toda categoría</option></select>
+        </div>
+        <div class="card task-card">
+          <ul id="task-list" class="task-list"></ul>
+          <div id="task-empty" class="empty" hidden></div>
+        </div>
+      </section>
+      <section id="calendar" class="view" hidden>
+        <header class="page-head page-head-row">
+          <h1>Calendar</h1>
+          <div class="cal-controls">
+            <div class="seg" role="group" aria-label="Vista">
+              <button class="seg-btn is-active" data-mode="month" aria-pressed="true">Mes</button>
+              <button class="seg-btn" data-mode="week" aria-pressed="false">Semana</button>
+            </div>
+            <button class="icon-btn" id="cal-prev" aria-label="Anterior">&#8249;</button>
+            <button class="btn btn-soft" id="cal-today">Hoy</button>
+            <button class="icon-btn" id="cal-next" aria-label="Siguiente">&#8250;</button>
+          </div>
+        </header>
+        <div class="card">
+          <h2 id="cal-title" class="cal-title" aria-live="polite"></h2>
+          <div class="cal-weekdays" aria-hidden="true"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+          <div id="cal-grid" class="cal-grid"></div>
+        </div>
+        <div class="card cal-day-panel">
+          <h2 id="cal-day-title"></h2>
+          <ul id="cal-day-list" class="task-list"></ul>
+          <div id="cal-day-empty" class="empty" hidden></div>
+        </div>
+      </section>
+      <section id="focus" class="view" hidden>
+        <header class="page-head"><h1>Focus Room</h1></header>
+        <div class="focus-layout">
+          <div class="card focus-card">
+            <p id="focus-mode" class="focus-mode">Concentración</p>
+            <div class="ring-wrap">
+              <svg class="ring" viewBox="0 0 200 200" aria-hidden="true"><circle class="ring-bg" cx="100" cy="100" r="90"/><circle id="ring-fg" class="ring-fg" cx="100" cy="100" r="90"/></svg>
+              <div id="focus-time" class="focus-time" role="timer">25:00</div>
+            </div>
+            <p id="focus-status" class="focus-status" role="status"></p>
+            <div class="focus-controls">
+              <button class="btn btn-primary" id="f-start">Iniciar</button>
+              <button class="btn btn-soft" id="f-pause">Pausar</button>
+              <button class="btn btn-soft" id="f-reset">Reiniciar</button>
+              <button class="btn btn-soft" id="f-finish">Finalizar</button>
+            </div>
+            <div class="presets" role="group" aria-label="Duración">
+              <button class="seg-btn" data-min="15">15 min</button><button class="seg-btn" data-min="25">25 min</button>
+              <button class="seg-btn" data-min="45">45 min</button><button class="seg-btn" data-min="60">60 min</button>
+              <input type="number" id="f-custom" min="1" max="240" placeholder="Otro (min)" aria-label="Duración personalizada en minutos">
+              <button class="btn btn-soft" id="f-custom-set">Usar</button>
+            </div>
+            <label class="check-row"><input type="checkbox" id="f-pomodoro"> Modo Pomodoro</label>
+            <label class="field">Tarea asociada <select id="f-task"></select></label>
+          </div>
+          <div class="card">
+            <h2>Sesiones</h2>
+            <p id="f-total" class="f-total"></p>
+            <ul id="f-log" class="task-list"></ul>
+            <div id="f-log-empty" class="empty"><p>Aún no hay sesiones.</p><small>Las que completes aparecerán aquí.</small></div>
+          </div>
+        </div>
+      </section>
+      <section id="music" class="view" hidden>
+        <header class="page-head"><h1>Music</h1></header>
+        <div class="card music-note">
+          <h2>Cómo funciona aquí</h2>
+          <p>Pega el enlace de una playlist o álbum de Spotify o Apple Music y Dayflow lo guarda y lo muestra con el reproductor oficial de cada servicio. Sin una sesión iniciada en el servicio, esos reproductores pueden limitarse a fragmentos de canciones; el enlace “Abrir” te lleva a la app completa.</p>
+        </div>
+        <div class="card">
+          <form id="music-form" class="music-form" novalidate>
+            <label class="field">Nombre (opcional) <input id="music-name" maxlength="40"></label>
+            <label class="field">Enlace de Spotify o Apple Music <input id="music-url" type="url" placeholder="https://open.spotify.com/playlist/..."></label>
+            <button class="btn btn-primary" type="submit">Guardar playlist</button>
+          </form>
+          <p id="music-error" class="form-error" role="alert"></p>
+        </div>
+        <div class="card"><h2>Mis playlists</h2>
+          <ul id="music-list" class="task-list"></ul>
+          <div id="music-empty" class="empty"><p>Aún no guardas playlists.</p><small>Pega un enlace arriba para empezar.</small></div>
+        </div>
+        <div id="music-player" class="music-player"></div>
+      </section>
+      <section id="settings" class="view" hidden>
+        <header class="page-head"><h1>Settings</h1></header>
+        <form id="settings-form" class="card settings-form" novalidate>
+          <label class="field">Tu nombre <input name="userName" maxlength="30" autocomplete="given-name"></label>
+          <label class="field">Formato de hora <select name="timeFormat"><option value="24">24 horas</option><option value="12">12 horas (a. m. / p. m.)</option></select></label>
+          <h2>Temporizador</h2>
+          <div class="form-row">
+            <label class="field">Concentración (min) <input type="number" name="focusMin" min="1" max="180"></label>
+            <label class="field">Descanso corto (min) <input type="number" name="shortMin" min="1" max="60"></label>
+          </div>
+          <div class="form-row">
+            <label class="field">Descanso largo (min) <input type="number" name="longMin" min="1" max="90"></label>
+            <label class="field">Descanso largo cada (sesiones) <input type="number" name="longEvery" min="2" max="10"></label>
+          </div>
+          <label class="check-row"><input type="checkbox" name="notifications"> Avisarme cuando termine una sesión (notificación del navegador)</label>
+          <p id="settings-msg" class="form-error" role="status"></p>
+          <div class="form-actions"><button class="btn btn-primary" type="submit">Guardar cambios</button></div>
+        </form>
+        <div class="card">
+          <h2>Preferencias visuales</h2>
+          <p class="task-desc">Por ahora la paleta es fija. Elegir otros temas llegará en una versión futura.</p>
+          <ul class="swatches">
+            <li><i style="background:#17243D"></i>Azul marino</li><li><i style="background:#B9A6E8"></i>Lavanda</li>
+            <li><i style="background:#E7DFFF"></i>Lila suave</li><li><i style="background:#F7F5FB"></i>Fondo</li>
+            <li><i style="background:#8C9AB8"></i>Azul grisáceo</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Orden importa: storage y navigation primero, app al final -->
+  <dialog id="task-dialog" class="dialog" aria-labelledby="task-dialog-title">
+    <form id="task-form" novalidate>
+      <h2 id="task-dialog-title">Nueva tarea</h2>
+      <label>Título <input name="title" required maxlength="80"></label>
+      <label>Descripción (opcional) <textarea name="description" rows="2" maxlength="300"></textarea></label>
+      <div class="form-row">
+        <label>Categoría o materia <input name="category" list="category-options" maxlength="30"></label>
+        <label>Fecha de entrega <input type="date" name="dueDate"></label>
+      </div>
+      <div class="form-row">
+        <label>Prioridad <select name="priority"><option value="low">Baja</option><option value="medium" selected>Media</option><option value="high">Alta</option></select></label>
+        <label>Estado <select name="status"><option value="pending">Pendiente</option><option value="progress">En progreso</option><option value="completed">Completada</option></select></label>
+      </div>
+      <label>Tiempo estimado en minutos (opcional) <input type="number" name="estimatedMinutes" min="1" max="1440"></label>
+      <datalist id="category-options"></datalist>
+      <p id="task-error" class="form-error" role="alert"></p>
+      <div class="form-actions">
+        <button type="button" class="btn btn-soft" id="task-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar tarea</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/storage.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/music.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

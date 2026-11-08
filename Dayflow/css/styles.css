@@ -1,0 +1,37 @@
+/* styles.css — variables de color, tipografía y estilos base */
+:root {
+  --navy: #17243D;
+  --lavender: #B9A6E8;
+  --lilac: #E7DFFF;
+  --bg: #F7F5FB;
+  --white: #FFFFFF;
+  --slate: #8C9AB8;
+
+  /* Variaciones derivadas */
+  --navy-soft: #24355A;
+  --lavender-deep: #8F78D6;
+  --border: #E4DFF2;
+  --danger: #C2506B;
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --shadow: 0 6px 24px rgba(23, 36, 61, .07);
+
+  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-family: var(--font-body); line-height: 1.6; color: var(--navy); background: var(--bg); }
+h1, h2 { margin: 0; font-weight: 600; }
+h1 { font-family: var(--font-display); font-size: clamp(1.9rem, 4vw, 2.7rem); line-height: 1.15; letter-spacing: -.01em; }
+h2 { font-size: 1.05rem; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--lavender-deep); outline-offset: 2px; }
+.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
